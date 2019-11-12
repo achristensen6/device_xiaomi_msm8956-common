@@ -352,7 +352,7 @@ on post-fs-data
 
     #Create the symlink to qcn wpa_supplicant folder for ar6000 wpa_supplicant
     mkdir /data/system 0775 system system
-    #symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
+    symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
     #Create directories for Location services
     mkdir /data/vendor/location 0770 gps gps
@@ -461,7 +461,6 @@ service iop /system/vendor/bin/iop
     class main
     user root
     group root
-    disabled
     socket iop seqpacket 0666 root system
 
 on property:sys.boot_completed=1
@@ -519,7 +518,6 @@ service start_hci_filter /system/vendor/bin/wcnss_filter
     user bluetooth
     group bluetooth diag system wakelock
     seclabel u:r:bluetooth:s0
-    disabled
     writepid /dev/cpuset/system-background/tasks
 
 service config_bt_addr /system/vendor/bin/btnvtool -O
@@ -582,13 +580,12 @@ service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
     -g@android:wpa_wlan0
 #   we will start as root and wpa_supplicant will switch to user wifi
 #   after setting up the capabilities required for WEXT
-#   user wifi
-#   group wifi inet keystore
+user wifi
+group wifi inet keystore
     interface android.hardware.wifi.supplicant@1.0::ISupplicant default
     interface android.hardware.wifi.supplicant@1.1::ISupplicant default
     class main
     socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
     oneshot
 
 service loc_launcher /system/vendor/bin/loc_launcher
@@ -606,7 +603,6 @@ service vendor.qcom-post-boot /vendor/bin/init.qcom.post_boot.sh
     class late_start
     user root
     group root system wakelock
-    disabled
     oneshot
 
 on property:sys.boot_completed=1
@@ -637,13 +633,11 @@ service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /system/vendor/etc/m
     class core
     user root
     group root
-    disabled
 
 service vendor.msm_irqbal_lb /vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance_little_big.conf
     class core
     user root
     group root
-    disabled
 
 on charger
     setprop persist.sys.usb.config mass_storage
@@ -662,5 +656,4 @@ service vendor.time_daemon /system/vendor/bin/time_daemon
 service vendor.power_off_alarm /vendor/bin/power_off_alarm
     class core
     group system
-    disabled
     oneshot
